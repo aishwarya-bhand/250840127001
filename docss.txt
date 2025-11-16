@@ -1,0 +1,221 @@
+✅ A) Create a Custom VPC (5 Marks)
+Steps
+
+Go to AWS Console → VPC.
+
+Click Create VPC.
+
+Select VPC Only.
+
+Give a name: VPC-<Your PRN>
+Example: VPC-2508
+
+Set IPv4 CIDR block = 10.0.0.0/16
+
+Leave other settings default.
+
+Click Create VPC.
+
+✔ VPC created with CIDR 10.0.0.0/16
+
+✅ B) Create Public & Private Subnets + EC2 Instances (15 Marks)
+1. Create Public Subnet
+
+Go to Subnets → Create Subnet
+
+Select your VPC-PRN
+
+Subnet Name: Public-Subnet-PRN
+
+Availability Zone: ap-south-1a (or any)
+
+IPv4 CIDR: 10.0.1.0/24
+
+Create Subnet.
+
+2. Create Private Subnet
+
+Subnet Name: Private-Subnet-PRN
+
+IPv4 CIDR: 10.0.2.0/24
+
+Create Subnet.
+
+3. Create & Attach Internet Gateway
+
+Go to Internet Gateways → Create
+
+Name: IGW-PRN
+
+Click Create
+
+Click Attach to VPC → choose VPC-PRN
+
+4. Create Route Table for Public Subnet
+
+Go to Route Tables → Create Route Table
+
+Name: Public-RT-PRN
+
+Select your VPC.
+
+Edit Routes → Add:
+
+Destination: 0.0.0.0/0
+
+Target: Internet Gateway (IGW-PRN)
+
+Edit Subnet Associations → Select Public-Subnet-PRN
+
+✔ Public subnet now has internet access.
+
+5. Launch EC2 Instance in Public Subnet
+
+Go to EC2 → Launch Instance
+
+Name: Public-EC2-PRN
+
+AMI: Amazon Linux / Ubuntu
+
+Key Pair: Create or choose existing
+
+Network:
+
+VPC: VPC-PRN
+
+Subnet: Public-Subnet-PRN
+
+Auto-assign Public IP: Enable
+
+Launch Instance.
+
+Expected Output (Public Instance)
+
+When you SSH using:
+
+ssh -i key.pem ec2-user@<PUBLIC_IP>
+
+
+and run:
+
+sudo yum install -y httpd
+echo "This is my PRN" > /var/www/html/index.html
+sudo systemctl start httpd
+
+
+Browser output:
+
+This is my PRN
+
+6. Launch EC2 Instance in Private Subnet (No Internet)
+
+Launch Instance → Name: Private-EC2-PRN
+
+AMI: Amazon Linux
+
+Network:
+
+VPC: VPC-PRN
+
+Subnet: Private-Subnet-PRN
+
+Auto-assign Public IP: Disable
+
+Launch instance.
+
+Expected Output (Private Instance)
+
+Try:
+
+ping google.com
+
+
+Output should be:
+
+ping: google.com: Temporary failure in name resolution
+
+
+✔ Confirms NO internet for private instance.
+
+✅ C) Create Lambda Function in Python (20 Marks)
+1. Create Lambda
+
+Go to AWS Lambda → Create Function
+
+Select Author from scratch
+
+Function Name: Lambda-PRN
+
+Runtime: Python 3.x
+
+Create Function.
+
+2. Add the Code
+def lambda_handler(event, context):
+    print("This is my PRN")
+    return "This is my PRN"
+
+
+Replace PRN with your actual PRN.
+
+Click Deploy.
+
+3. Test the Lambda
+
+Click Test
+
+Create test event → Run
+
+Expected Output:
+
+"This is my PRN"
+
+4. Verify in CloudWatch Logs
+
+Go to Monitor → View Logs in CloudWatch
+
+You will see:
+
+START RequestId: ...
+This is my PRN
+END RequestId: ...
+
+
+✔ Shows the function returned your message successfully.
+
+⭐ Final Summary for Submission
+A) Custom VPC
+
+Created VPC with CIDR 10.0.0.0/16
+
+B) Subnets + EC2
+
+Public Subnet: 10.0.1.0/24
+
+Private Subnet: 10.0.2.0/24
+
+Public EC2: Has internet
+
+Private EC2: No internet
+(verified by ping failure)
+
+C) Lambda
+
+Python Lambda returning
+"This is my PRN"
+
+Output visible in test + CloudWatch logs
+
+44  git clone https://github.com/aishwarya-bhand/250840127001.git
+    cp ~/index.html ~/250840127001/
+   cd 250840127001
+    ls
+    git add .
+   git commit -m "Added Dockerfile for httpd port 8081"
+    git push
+    git log --oneline
+   git log --oneline
+docker run -it httpd:latest bash
+docker build -t mypython:latest .
+docker run -d -p 8081:80 myhttpd:latest
+docker run -d --name mypython-container -p 5005:5005 mypython:latest
